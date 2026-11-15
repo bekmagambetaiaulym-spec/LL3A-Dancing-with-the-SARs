@@ -1,0 +1,63 @@
+# Qosh Tepa Radar Pulse 🛰️💧
+**Monitoring Transboundary Canal Seepage & Surface Changes in the Amu Darya Basin Using NASA-ISRO NISAR L-Band SAR**
+
+*Submitted by Team LL3A for the 2026 NASA Space Apps Challenge — "Dancing with the SARs"*
+
+---
+
+## 📌 Overview
+**Qosh Tepa Radar Pulse** is an interactive web application and geospatial analysis pipeline designed to track surface and subsurface moisture anomalies along the 285-km unlined **Qosh Tepa Canal** in northern Afghanistan. Diverting up to 15–20% of the Amu Darya River's flow through porous desert soils, the canal poses critical agricultural and transboundary water-security challenges for Afghanistan, Uzbekistan, and Turkmenistan.
+
+Using all-weather, day-and-night L-band Synthetic Aperture Radar (SAR) imagery from the **NASA-ISRO SAR (NISAR)** mission (June vs. October 2026), our tool translates complex radar backscatter ($\sigma^0$) in **HH** and **HV** polarizations into actionable screening insights for water managers, researchers, and policymakers.
+
+---
+
+## ✨ Key Features
+* **Dual-Polarization Interactive Comparison:** Split-screen slider comparing June 22, 2026 and October 20, 2026 NISAR acquisitions across **HH** (surface scattering / soil moisture) and **HV** (volumetric scattering / vegetation & roughness) channels.
+* **Calibrated Local Change Detection (`Where did it change?`):** Differential backscatter mapping isolating localized moisture and roughness anomalies while filtering out broad regional atmospheric trends.
+* **Guided Narrative Walkthrough:** A 5-step interactive exploration linking radar physics to local soil salinization, downstream basin impacts, and targeted canal lining strategies.
+* **SAR Physics Explainer & Policy Evidence Deck:** Clear educational breakdowns of L-band scattering mechanisms alongside scientific guardrails explaining what radar can—and cannot—measure.
+
+---
+
+## 🛠️ Tech Stack
+* **Geospatial & SAR Processing:** Python (`Rasterio`, `GDAL`, `GeoPandas`, `NumPy`), QGIS
+* **Frontend & Mapping:** HTML5, CSS3, JavaScript, Leaflet.js, Esri World Imagery basemap
+* **Version Control:** Git / GitHub
+
+---
+
+## 🚀 Local Installation & Setup
+
+### Prerequisites
+* A modern web browser (Chrome, Firefox, Safari, Edge)
+* Python 3.9+ (optional, for local server or running raster preprocessing scripts)
+
+### Quick Start
+1. **Clone the repository:**
+   ```bash
+git clone https://github.com/bekmagambetaiaulym-spec/LL3A-Dancing-with-the-SARs.git
+cd LL3A-Dancing-with-the-SARs
+```
+
+
+   ## 🛰️ Data Sources & References
+All satellite datasets, basemaps, and contextual references used in this project are publicly accessible:
+
+1. **NASA-ISRO Synthetic Aperture Radar (NISAR) Mission Data:**
+   * Accessed via **NASA Earthdata Search** (https://search.earthdata.nasa.gov/) and the **Alaska Satellite Facility (ASF) Data Search Vertex** (https://search.asf.alaska.edu/).
+   * **Specific Dataset Granules Processed:**
+     * **June 22, 2026 Acquisition (L-band SAR, HH/HV):**  
+       `NISAR_L2_PR_GCOV_023_121_D_070_4005_DHDH_A_20260622T142734_20260622T142809_P05023_N_F_J_001`
+     * **October 20, 2026 Acquisition (L-band SAR, HH/HV):**  
+       `NISAR_L2_PR_GCOV_033_121_D_070_4005_DHDH_A_20261020T142732_20261020T142805_P05023_N_F_J_001`
+
+2. **NISAR Technical & Educational Documentation:**
+   * ASF NISAR Data User Guide (https://asf.alaska.edu/nisar/)
+   * NASA ARSET Synthetic Aperture Radar Training Materials (https://appliedsciences.nasa.gov/what-we-do/capacity-building/arset)
+
+3. **Cartography & Basemap:**
+   * Esri World Imagery via Leaflet.js (`© Esri, Maxar, Earthstar Geographics`).
+
+4. **Contextual & Policy Reporting:**
+   * Public reporting and hydrological assessments from *Eurasianet*, *The Diplomat*, *Times of Central Asia*, *Uzbekcosmos* (`gov.uz`), *TOLOnews*, and *Amu TV* (as of November 2026).

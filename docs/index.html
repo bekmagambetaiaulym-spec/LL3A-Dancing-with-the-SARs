@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qosh Tepa Canal from Space</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="extra.css">
+</head>
+<body>
+
+  <nav class="topbar">
+    <span class="brand"><span class="dot"></span>Qosh Tepa Radar Pulse</span>
+    <span class="tag">NASA Space Apps Challenge 2026 · Dancing with the SARs</span>
+  </nav>
+
+  <header class="hero">
+    <p class="eyebrow">Radar monitoring of a shared river</p>
+    <h1>Qosh Tepa Canal<br>from Space</h1>
+    <p class="lead">
+      A 285 km canal in northern Afghanistan is taking water from the Amu Darya, a river the
+      whole of Central Asia shares. The canal has no concrete lining, so part of that water may
+      soak into the sand instead of reaching fields. Unlined sections across desert sands risk 
+      losing vital irrigation water through seepage before it ever reaches crops. Using all-weather 
+      L-band radar from NASA-ISRO NISAR (June–October 2026), this tool detects subsurface soil
+      moisture anomalies along the canal corridor—turning opaque satellite backscatter into 
+      targeted inspection zones for water managers.
+    </p>
+  </header>
+
+  <main>
+    <section class="modes card">
+      <div class="seg">
+        <button class="mode-btn active" data-mode="compare">June vs October</button>
+        <button class="mode-btn" data-mode="change">Where did it change?</button>
+      </div>
+      <div id="chanBox" class="seg chan">
+        <span class="chan-label">Radar channel:</span>
+        <button class="chan-btn active" data-chan="HH">HH · surface echo</button>
+        <button class="chan-btn" data-chan="HV">HV · plants and rough ground</button>
+      </div>
+      <p id="modeDesc" class="mode-desc"></p>
+    </section>
+
+    <section id="wrap" class="card">
+      <div id="map"></div>
+      <div class="chip chip-left"></div>
+      <div class="chip chip-right"></div>
+      <div id="divider"></div>
+      <div id="maplegend" class="maplegend"></div>
+
+      <div id="story" class="story">
+        <p class="step" id="storyStep"></p>
+        <h4 id="storyTitle"></h4>
+        <p id="storyText"></p>
+        <div class="story-nav">
+          <button id="prevBtn">← Back</button>
+          <button id="nextBtn">Next →</button>
+        </div>
+      </div>
+
+      <input type="range" id="slider" min="0" max="100" value="50" aria-label="Before and after slider">
+    </section>
+
+    <!-- NEW: from the map to the real world -->
+    <section class="block" id="pathway">
+      <h2>From the map to the harvest</h2>
+      <p class="sub">What does a leaking canal mean for people? Click each stage to follow the water from the canal banks to farms and decisions across the region.</p>
+      <p class="hint">Tap a circle or use Next.</p>
+      <div class="path-wrap">
+        <div class="card snake" id="snake"></div>
+        <article class="card detail" id="detail" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <section class="block radar-decoder" id="radar-decoder">
+      <p class="section-kicker">Signal, decoded</p>
+      <h2>What does the radar see?</h2>
+      <p class="sub">Choose a surface to see how its texture and moisture can shape a NISAR L-band echo. These are patterns to interpret—not a unique fingerprint.</p>
+      <div class="card decoder">
+        <div class="terrain-picker" role="group" aria-label="Choose a terrain type">
+          <button class="terrain-btn active" type="button" data-terrain="water" aria-pressed="true">Calm Canal Water</button>
+          <button class="terrain-btn" type="button" data-terrain="sand" aria-pressed="false">Dry Desert Sand</button>
+          <button class="terrain-btn" type="button" data-terrain="seepage" aria-pressed="false">Wet Seepage Halo</button>
+          <button class="terrain-btn" type="button" data-terrain="crops" aria-pressed="false">Crops &amp; Rough Soil</button>
+        </div>
+        <div class="decoder-content">
+          <div class="radar-visual" id="radarVisual" data-surface="water" data-strength="low">
+            <svg viewBox="0 0 540 260" role="img" aria-labelledby="radarDiagramTitle radarDiagramDesc">
+              <title id="radarDiagramTitle">Radar echo from calm canal water</title>
+              <desc id="radarDiagramDesc">A satellite sends a radar pulse toward a surface and receives a weak echo.</desc>
+              <defs>
+                <linearGradient id="skyGlow" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stop-color="#f1f6fc"/>
+                  <stop offset="1" stop-color="#e6eef8"/>
+                </linearGradient>
+              </defs>
+              <rect x="0" y="0" width="540" height="260" rx="18" fill="url(#skyGlow)"/>
+              <circle cx="458" cy="48" r="20" fill="#fff" opacity=".8"/>
+              <g class="satellite">
+                <rect x="240" y="28" width="58" height="36" rx="8" fill="#0b3d91"/>
+                <path d="M239 34h-42v24h42m60-24h42v24h-42" fill="#91b8e7" stroke="#0b3d91" stroke-width="3"/>
+                <path d="M268 64v14" stroke="#0b3d91" stroke-width="3"/>
+                <circle cx="269" cy="84" r="5" fill="#fc3d21"/>
+              </g>
+              <path class="beam" d="M270 89 170 183 370 183Z"/>
+              <path class="outgoing-wave" d="M259 93 203 161M270 94 231 164M281 93 260 166"/>
+              <path class="echo-wave echo-one" d="M274 165 296 125"/>
+              <path class="echo-wave echo-two" d="M289 170 324 107"/>
+              <path class="echo-wave echo-three" d="M304 175 351 91"/>
+              <path class="ground" d="M38 193 Q112 190 170 195 T290 194 T410 194 T502 191V260H38Z"/>
+              <g class="water-detail">
+                <path d="M42 204q18-8 36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0" fill="none" stroke="#78a9c5" stroke-width="3"/>
+                <path d="M54 220q18-7 36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0t36 0" fill="none" stroke="#78a9c5" stroke-width="2" opacity=".65"/>
+              </g>
+              <g class="sand-detail">
+                <path d="m45 218 35-5 25 7 28-5 28 6 30-7 26 6 34-5 30 7 28-6 28 5 35-7 31 6 31-5 37 5" fill="none" stroke="#ae8d5f" stroke-width="3"/>
+                <path d="m60 236 28-4 34 5 31-5 28 5 35-6 34 5 33-4 31 5 31-5 32 4 35-5 35 5 35-4 25 3" fill="none" stroke="#c3a97f" stroke-width="2"/>
+              </g>
+              <g class="seepage-detail">
+                <path d="M40 204q55-14 110 0t110 0t110 0t110 0t70 0" fill="none" stroke="#6ea895" stroke-width="15" opacity=".2"/>
+                <path d="M40 212q55-14 110 0t110 0t110 0t110 0t70 0" fill="none" stroke="#5b9c84" stroke-width="4" opacity=".85"/>
+                <path d="M62 233q30-8 60 0t60 0t60 0t60 0t60 0t60 0t60 0t60 0" fill="none" stroke="#87bba6" stroke-width="2"/>
+              </g>
+              <g class="crop-detail" stroke="#5d805e" stroke-width="4" stroke-linecap="round" fill="none">
+                <path d="M92 195v-31m0 16-13-10m13 16 13-12M180 194v-41m0 20-14-12m14 19 14-13M278 195v-35m0 15-13-11m13 17 13-12M375 194v-44m0 21-14-12m14 18 14-13M462 193v-32m0 16-13-11m13 17 13-12"/>
+              </g>
+              <text class="diagram-label" x="30" y="29">NISAR L-BAND</text>
+              <text class="diagram-caption" x="36" y="250">SURFACE</text>
+              <text class="diagram-caption echo-caption" x="362" y="85">RETURN ECHO</text>
+            </svg>
+          </div>
+          <div class="decoder-copy" aria-live="polite">
+            <div class="terrain-heading">
+              <span class="surface-swatch" id="surfaceSwatch" aria-hidden="true"></span>
+              <span class="signal-level" id="signalLevel">Usually weak return</span>
+            </div>
+            <h3 id="terrainTitle">Calm Canal Water</h3>
+            <p id="terrainExplanation">A smooth water surface often reflects the radar pulse away from the satellite, so little energy returns and the surface can look dark. Wind, waves, or banks can change the echo.</p>
+            <p class="decoder-note" id="decoderNote"><strong>Canal signature:</strong> Confirms water presence in completed sections; wind-induced ripples can shift dark specular reflection into bright Bragg scattering.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block evidence" id="evidence">
+      <p class="section-kicker">Decision brief · 03 cards</p>
+      <div class="evidence-heading">
+        <div>
+          <h2>Policy Evidence Deck</h2>
+          <p class="sub">Three evidence checks for turning a satellite signal into a shared, practical decision.</p>
+        </div>
+        <div class="deck-controls">
+          <button type="button" class="deck-arrow" id="deckPrev" aria-label="Previous briefing">← Previous</button>
+          <span class="deck-count" id="deckCount" aria-live="polite">01 / 03</span>
+          <button type="button" class="deck-arrow deck-next" id="deckNext" aria-label="Next briefing">Next →</button>
+        </div>
+      </div>
+      <div class="deck-viewport" id="deckViewport" aria-label="Policy evidence cards">
+        <div class="deck-track" id="deckTrack">
+          <article class="card evidence-card" data-card="0" tabindex="0" role="button" aria-label="Focus Engineering Reality and Unlined Seepage">
+            <span class="evidence-index">01 <span>ENGINEERING REALITY</span></span>
+            <h3>Engineering Reality &amp; Unlined Seepage</h3>
+            <p class="evidence-lead">A long, unlined canal through sandy ground makes seepage plausible - but a bright radar patch is not a leak measurement.</p>
+            <div class="evidence-action"><span>Next move</span><p>Use repeat passes to flag persistent wet-looking reaches, then prioritize those locations for field moisture checks and targeted lining. Cross-check high HH backscatter (moisture) against low HV backscatter (lack of vegetation) to separate canal seepage from legitimate crop irrigation.</p></div>
+            <span class="evidence-foot">285 km canal · reported unlined · field-check the signal</span>
+          </article>
+          <article class="card evidence-card" data-card="1" tabindex="0" role="button" aria-label="Focus Diplomatic Friction and Independent Verification">
+            <span class="evidence-index">02 <span>SHARED RIVER</span></span>
+            <h3>Diplomatic Friction &amp; Independent Verification</h3>
+            <p class="evidence-lead">Afghanistan's development goals sit alongside downstream concerns over a river shared across Central Asia; disputed figures can harden positions.</p>
+            <div class="evidence-action"><span>Next move</span><p>Publish dates, methods, and uncertainty with the imagery. Pair satellite observations with jointly agreed river-flow records and independent site checks.</p></div>
+            <span class="evidence-foot">Shared evidence can support dialogue—not settle water rights</span>
+          </article>
+          <article class="card evidence-card" data-card="2" tabindex="0" role="button" aria-label="Focus Scientific Guardrails of Radar">
+            <span class="evidence-index">03 <span>SCIENCE GUARDRAILS</span></span>
+            <h3>Scientific Guardrails of Radar</h3>
+            <p class="evidence-lead">Radar measures returned signal, not water volume, seepage rate, or cause. Smooth sand and calm water can both look dark.</p>
+            <div class="evidence-action"><span>Next move</span><p>Treat change maps as screening leads. Check rainfall, viewing geometry, and repeat observations; verify priority sites on the ground before acting.</p></div>
+            <span class="evidence-foot">Signal change is evidence to investigate—not proof</span>
+          </article>
+        </div>
+      </div>
+      <p class="deck-hint">Click a side card to bring it into focus</p>
+    </section>
+
+    <p class="note">
+      Sources: Eurasianet, The Diplomat, Times of Central Asia, Uzbekcosmos (gov.uz),
+      TOLOnews, Amu TV. Facts reflect public reporting as of November 2026 and some
+      figures are disputed. Red markers show reference points along the canal.
+    </p>
+  </main>
+
+  <footer>
+    Data: NASA-ISRO NISAR (22 June and 20 October 2026) · Basemap: Esri World Imagery
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="stats.js"></script>
+  <script src="script.js"></script>
+  <script src="extra.js"></script>
+</body>
+</html>
